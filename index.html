@@ -25,6 +25,8 @@
             --fairy-blue: #6b7aa1;
             --fairy-silver: #d4d8e0;
             --fairy-gold: #d4af37;
+            --terminal-green: #39ff14;
+            --terminal-red: #ff4136;
         }
 
         * {
@@ -71,7 +73,89 @@
         #floating-hearts-canvas { z-index: 5; }
 
         /* ===================================
-           3. COMPONENT: CINEMATIC ENTRANCE
+           3. COMPONENT: HACKING PRANK SCREEN
+           =================================== */
+        #hacking-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 2000; /* Highest z-index for initial screen */
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            transition: opacity 0.5s ease-out;
+        }
+        #hacking-screen.hide { 
+            opacity: 0; 
+            pointer-events: none;
+        }
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background-color: var(--terminal-red); }
+        .dot-yellow { background-color: #ffdc00; }
+        .dot-green { background-color: var(--terminal-green); }
+        .terminal-title {
+            margin-left: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        .terminal-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .terminal-line {
+            margin-bottom: 5px;
+            white-space: pre-wrap;
+        }
+        .command {
+            color: var(--terminal-green);
+        }
+        .response {
+            color: #ccc;
+        }
+        .error {
+            color: var(--terminal-red);
+        }
+        .success {
+            color: var(--terminal-green);
+        }
+        .warning {
+            color: #ffdc00;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: var(--terminal-green);
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* ===================================
+           4. COMPONENT: CINEMATIC ENTRANCE
            =================================== */
         #cinematic-entrance {
             position: fixed;
@@ -80,14 +164,26 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(ellipse at center, #2c3e50 0%, #1a1a2e 100%);
-            z-index: 1000; /* Highest z-index for overlay */
-            display: flex;
+            z-index: 1000; /* Below hacking screen */
+            display: none; /* Changed from opacity: 0 for more robust hiding */
             justify-content: center;
             align-items: center;
             flex-direction: column;
             transition: opacity 2.5s ease-out;
         }
-        #cinematic-entrance.hide { opacity: 0; pointer-events: none; }
+        #cinematic-entrance.show { 
+            display: flex; /* Show the screen */
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        #cinematic-entrance.hide { 
+            opacity: 0; 
+            pointer-events: none;
+            transition: opacity 1.5s ease-out; /* Fade out */
+        }
+        #cinematic-entrance.hide .entrance-text, #cinematic-entrance.hide .magical-door {
+            animation-play-state: paused; /* Stop animations when hiding */
+        }
 
         .entrance-text {
             font-family: var(--script-font);
@@ -160,7 +256,7 @@
         }
 
         /* ===================================
-           4. COMPONENT: HERO SECTION
+           5. COMPONENT: HERO SECTION
            =================================== */
         #hero-section { text-align: center; }
         .hero-content { position: relative; z-index: 2; }
@@ -199,7 +295,7 @@
         }
 
         /* ===================================
-           5. COMPONENT: LOVE CARDS
+           6. COMPONENT: LOVE CARDS
            =================================== */
         #love-cards { background: linear-gradient(to bottom, rgba(30, 30, 45, 0.5), rgba(140, 160, 199, 0.1)); }
         .cards-container {
@@ -277,7 +373,7 @@
         }
 
         /* ===================================
-           6. COMPONENT: LOVE TIMELINE
+           7. COMPONENT: LOVE TIMELINE
            =================================== */
         #love-timeline { overflow: hidden; }
         .timeline-container {
@@ -345,7 +441,7 @@
         }
 
         /* ===================================
-           7. COMPONENT: ENDING SECTION
+           8. COMPONENT: ENDING SECTION
            =================================== */
         #ending-section { text-align: center; overflow: hidden; }
         .ending-content { position: relative; z-index: 2; }
@@ -370,7 +466,7 @@
         }
 
         /* ===================================
-           8. UTILITY CLASSES
+           9. UTILITY CLASSES
            =================================== */
         #confetti-canvas {
             position: fixed;
@@ -464,7 +560,7 @@
         }
 
         /* ===================================
-           9. KEYFRAME ANIMATIONS
+           10. KEYFRAME ANIMATIONS
            =================================== */
         @keyframes fadeInGlow { to { opacity: 1; } }
         @keyframes slideInFromTop { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -476,7 +572,7 @@
         @keyframes frameGlow { from { box-shadow: inset 0 0 20px var(--glow-soft), 0 0 30px var(--glow-soft); } to { box-shadow: inset 0 0 30px var(--fairy-gold), 0 0 40px var(--fairy-gold); } }
 
         /* ===================================
-           10. RESPONSIVE DESIGN
+           11. RESPONSIVE DESIGN
            =================================== */
         @media screen and (max-width: 768px) {
             .entrance-text { font-size: 1.8rem; }
@@ -583,6 +679,23 @@
     <canvas id="floating-hearts-canvas"></canvas>
 
     <!-- ===================================
+         HACKING PRANK SCREEN
+         =================================== -->
+    <div id="hacking-screen">
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+            </div>
+            <div class="terminal-title">Birthday System v25.0 - Hacked Terminal</div>
+        </div>
+        <div class="terminal-content" id="terminal-content">
+            <!-- Terminal content will be added dynamically with JavaScript -->
+        </div>
+    </div>
+
+    <!-- ===================================
          CINEMATIC ENTRANCE OVERLAY
          =================================== -->
     <div id="cinematic-entrance">
@@ -671,12 +784,122 @@
         }
 
         // ===================================
-        // 1. MAIN BACKGROUND ANIMATION (STARS, NEBULA, SHOOTING STARS)
+        // 1. HACKING PRANK SCREEN (10s DURATION)
+        // ===================================
+        const hackingScreen = document.getElementById('hacking-screen');
+        const terminalContent = document.getElementById('terminal-content');
+        const cinematicEntrance = document.getElementById('cinematic-entrance');
+        
+        // Longer terminal commands and responses
+        const terminalSequence = [
+            { type: 'command', text: 'root@birthday-system:~# sudo ./initiate_surprise.sh' },
+            { type: 'response', text: '[sudo] password for d: ********' },
+            { type: 'response', text: 'Access granted.' },
+            { type: 'command', text: 'root@birthday-system:~# nmap -sV princess.sayang.love' },
+            { type: 'response', text: 'PORT    STATE SERVICE  VERSION' },
+            { type: 'response', text: '22/tcp   open  ssh      OpenSSH 7.6p1' },
+            { type: 'response', text: '80/tcp   open  http     Apache httpd 2.4.29' },
+            { type: 'response', text: '443/tcp  open  ssl/http Apache httpd 2.4.29' },
+            { type: 'error', text: 'nmap: scan report complete. 3 hosts up.' },
+            { type: 'command', text: 'root@birthday-system:~# hydra -l admin -P /usr/share/wordlists/rockyou.txt princess.sayang.love ssh' },
+            { type: 'response', text: 'Hydra v8.8 (c) 2019 by van Hauser/THC...' },
+            { type: 'warning', text: 'WARNING: Restorefile (you have 10 seconds to abort...)' },
+            { type: 'error', text: '[ATTEMPT] target princess.sayang.love - login "admin" - pass "123456" - 1 of 1' },
+            { type: 'response', text: '[ERROR] All login attempts failed. Target may be down.' },
+            { type: 'command', text: 'root@birthday-system:~# ssh -i ~/.ssh/love_key princess@heart.server' },
+            { type: 'response', text: 'Warning: Permanently added \'heart.server\' (ECDSA) to list of known hosts.' },
+            { type: 'response', text: 'Princess Sayang\'s Birthday Celebration' },
+            { type: 'response', text: 'Last login: Today from prince-d.com' },
+            { type: 'command', text: 'princess@heart.server:~$ ls -la /memories/' },
+            { type: 'response', text: 'drwxr-xr-x  2 princess princess 4096 Day 1' },
+            { type: 'response', text: 'drwxr-xr-x  2 princess princess 4096 Day 100' },
+            { type: 'response', text: 'drwxr-xr-x  2 princess princess 4096 Day 372' },
+            { type: 'command', text: 'princess@heart.server:~$ grep -i "love" /var/log/heart.log | tail -n 5' },
+            { type: 'response', text: 'log: Love protocol initialized by prince-d.' },
+            { type: 'response', text: 'log: Happiness level increased by 100%.' },
+            { type: 'response', text: 'log: Error: System cannot quantify love.' },
+            { type: 'response', text: 'log: Warning: Smile detected. System stability compromised.' },
+            { type: 'command', text: 'princess@heart.server:~$ tar -czvf memories.tar.gz /memories/' },
+            { type: 'response', text: 'a /memories/Day 1' },
+            { type: 'response', text: 'a /memories/Day 100' },
+            { type: 'response', text: 'a /memories/Day 372' },
+            { type: 'response', text: 'memories.tar.gz compressed successfully.' },
+            { type: 'command', text: 'princess@heart.server:~$ scp memories.tar.gz d@celebration-vault.com:/surprise/' },
+            { type: 'response', text: 'd@celebration-vault.com\'s password: ********' },
+            { type: 'response', text: 'memories.tar.gz               100%  512MB  1.5MB/s   05:42' },
+            { type: 'command', text: 'princess@heart.server:~$ cat /etc/birthday_wishes.conf' },
+            { type: 'response', text: 'wish_1="You make my world softer..."' },
+            { type: 'response', text: 'wish_2="Every moment with you feels like heaven..."' },
+            { type: 'response', text: 'wish_3="Thank you for loving me..."' },
+            { type: 'response', text: 'wish_4="No matter where life takes us..."' },
+            { type: 'command', text: 'princess@heart.server:~$ ./deploy_celebration.exe --force' },
+            { type: 'response', text: 'Downloading love_protocol.dll... [OK]' },
+            { type: 'response', text: 'Installing happiness.dll... [OK]' },
+            { type: 'response', text: 'Bypassing firewall of doubt... [OK]' },
+            { type: 'response', text: 'Injecting birthday_surprise.exe... [OK]' },
+            { type: 'success', text: 'SUCCESS: Celebration protocol fully deployed!' },
+            { type: 'command', text: 'princess@heart.server:~$ chmod +x ./open_magical_door.sh' },
+            { type: 'response', text: 'princess@heart.server:~$ ./open_magical_door.sh' },
+            { type: 'response', text: 'Initializing door opening sequence...' },
+            { type: 'command', text: 'princess@heart.server:~$ exit' },
+            { type: 'response', text: 'Connection to heart.server closed.' },
+            { type: 'command', text: 'root@birthday-system:~# reboot --into-celebration' },
+            { type: 'response', text: 'System will now reboot into the celebration mode.' },
+        ];
+        
+        let currentLineIndex = 0;
+        
+        function addTerminalLine(type, text, delay = 0) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const line = document.createElement('div');
+                    line.className = `terminal-line ${type}`;
+                    
+                    const prefix = type === 'command' ? 'root@birthday-system:~# ' : (type === 'response' ? '' : '');
+                    line.innerHTML = `<span class="${type}">${prefix}${text}</span>`;
+                    
+                    terminalContent.appendChild(line);
+                    terminalContent.scrollTop = terminalContent.scrollHeight;
+                    resolve();
+                }, delay);
+            });
+        }
+        
+        async function runTerminalSequence() {
+            // Calculate delay to make the sequence last around 10 seconds
+            // Total time = (number_of_lines * delay_per_line) + final_delay
+            // We have 50 lines. Aim for ~8.5s of typing and 1.5s pause.
+            // 8500ms / 50 lines ≈ 170ms per line.
+            const lineDelay = 170; 
+            const finalDelay = 1500;
+
+            for (const item of terminalSequence) {
+                await addTerminalLine(item.type, item.text, lineDelay); 
+            }
+            
+            // Add cursor at the end
+            const cursorLine = document.createElement('div');
+            cursorLine.className = 'terminal-line';
+            cursorLine.innerHTML = '<span class="command">root@birthday-system:~# </span><span class="cursor"></span>';
+            terminalContent.appendChild(cursorLine);
+            
+            // Wait for the final delay then transition to the entrance screen
+            setTimeout(() => {
+                hackingScreen.classList.add('hide');
+                cinematicEntrance.classList.add('show');
+            }, finalDelay);
+        }
+        
+        // Start the terminal sequence immediately
+        runTerminalSequence();
+
+        // ===================================
+        // 2. MAIN BACKGROUND ANIMATION (STARS, NEBULA, SHOOTING STARS)
         // ===================================
         const { canvas: bgCanvas, ctx: bgCtx } = setupCanvas('main-background-canvas');
         const nebulae = Array(3).fill().map(() => ({
             x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
-            radius: Math.random() * 400 + 200, color: `hsla(${Math.random() * 30 + 200}, 70%, 50%, 0.02)`, // Blue hues
+            radius: Math.random() * 400 + 200, color: `hsla(${Math.random() * 30 + 200}, 70%, 50%, 0.02)`,
             speedX: (Math.random() - 0.5) * 0.2, speedY: (Math.random() - 0.5) * 0.2,
         }));
         const stars = Array(200).fill().map(() => ({
@@ -696,11 +919,9 @@
         }
 
         function drawMainBackground() {
-            // Semi-transparent black for trail effect
             bgCtx.fillStyle = 'rgba(26, 26, 46, 0.1)';
             bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
 
-            // Draw nebulae
             nebulae.forEach(n => {
                 const gradient = bgCtx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.radius);
                 gradient.addColorStop(0, n.color.replace('0.02', '0.05'));
@@ -714,7 +935,6 @@
                 if (n.y > bgCanvas.height + n.radius) n.y = -n.radius;
             });
 
-            // Draw stars
             stars.forEach(star => {
                 star.opacity += star.twinkleSpeed;
                 if (star.opacity > 1 || star.opacity < 0) star.twinkleSpeed = -star.twinkleSpeed;
@@ -722,7 +942,6 @@
                 bgCtx.beginPath(); bgCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2); bgCtx.fill();
             });
 
-            // Draw shooting stars
             createShootingStar();
             shootingStars.forEach((star, index) => {
                 bgCtx.save();
@@ -752,7 +971,7 @@
         drawMainBackground();
 
         // ===================================
-        // 2. FLOATING HEARTS ANIMATION
+        // 3. FLOATING HEARTS ANIMATION
         // ===================================
         const { canvas: heartsCanvas, ctx: heartsCtx } = setupCanvas('floating-hearts-canvas');
         const floatingHearts = [];
@@ -762,7 +981,7 @@
                 size: Math.random() * 15 + 10, speedY: -Math.random() * 1.5 - 0.5,
                 speedX: (Math.random() - 0.5) * 1.5, opacity: Math.random() * 0.5 + 0.3,
                 wobble: Math.random() * Math.PI * 2, wobbleSpeed: 0.03,
-                color: `hsla(${Math.random() * 20 + 340}, 70%, 60%, `, // Pink/Red hues
+                color: `hsla(${Math.random() * 20 + 340}, 70%, 60%, `,
             });
         }
         function drawFloatingHearts() {
@@ -770,7 +989,6 @@
             floatingHearts.forEach((heart, index) => {
                 heartsCtx.save();
                 heartsCtx.globalAlpha = heart.opacity;
-                // Add a soft glow
                 heartsCtx.shadowColor = heart.color + '0.8)';
                 heartsCtx.shadowBlur = 15;
                 heartsCtx.fillStyle = heart.color + heart.opacity + ')';
@@ -798,17 +1016,19 @@
         drawFloatingHearts();
 
         // ===================================
-        // 3. ENTRANCE & DOOR LOGIC
+        // 4. ENTRANCE & DOOR LOGIC
         // ===================================
-        const entrance = document.getElementById('cinematic-entrance');
         const magicalDoor = document.getElementById('magical-door');
         magicalDoor.addEventListener('click', () => {
             magicalDoor.classList.add('opened');
-            setTimeout(() => entrance.classList.add('hide'), 1500);
+            setTimeout(() => {
+                cinematicEntrance.classList.add('hide');
+                cinematicEntrance.classList.remove('show'); // Also remove the show class to reset state
+            }, 1500);
         });
 
         // ===================================
-        // 4. TYPEWRITER EFFECT
+        // 5. TYPEWRITER EFFECT
         // ===================================
         const typewriterElement = document.getElementById('typewriter');
         const text = "Once upon a time, in a magical kingdom, a prince met his princess...";
@@ -819,7 +1039,7 @@
         setTimeout(() => typewriterElement.querySelector('.cursor').style.display = 'none', letterElements.length * 50 + 1000);
 
         // ===================================
-        // 5. INTERACTIVE CARDS & CONFETTI
+        // 6. INTERACTIVE CARDS & CONFETTI
         // ===================================
         const cards = document.querySelectorAll('.card');
         cards.forEach(card => card.addEventListener('click', () => {
@@ -854,7 +1074,7 @@
         }
 
         // ===================================
-        // 6. TIMELINE ANIMATION
+        // 7. TIMELINE ANIMATION
         // ===================================
         const timelineContainer = document.getElementById('timeline-container');
         const timelineEvents = timelineContainer.querySelectorAll('.timeline-event');
@@ -871,7 +1091,7 @@
         timelineEvents.forEach(event => timelineObserver.observe(event));
 
         // ===================================
-        // 7. YOUTUBE PLAYER CONTROLS
+        // 8. YOUTUBE PLAYER CONTROLS
         // ===================================
         let isPlaying = true;
         const musicToggle = document.getElementById('music-toggle');
@@ -879,7 +1099,6 @@
         const youtubePlayer = document.getElementById('youtube-player');
         const youtubeIframe = document.getElementById('youtube-iframe');
         
-        // Load YouTube IFrame API
         let player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-iframe', {
@@ -904,7 +1123,6 @@
             }
         }
         
-        // Toggle music play/pause
         musicToggle.addEventListener('click', () => {
             if (player && player.pauseVideo && player.playVideo) {
                 if (isPlaying) {
@@ -918,13 +1136,11 @@
             }
         });
         
-        // Load YouTube API script
         const tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         
-        // Make onYouTubeIframeAPIReady globally available
         window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
     });
     </script>
