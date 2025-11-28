@@ -381,31 +381,87 @@
             pointer-events: none;
             z-index: 100; /* Above content, below entrance */
         }
-        .youtube-player {
+        
+        /* ===================================
+           MOBILE-RESPONSIVE YOUTUBE PLAYER
+           =================================== */
+        .youtube-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+        
+        .youtube-player {
             width: 200px;
             height: 50px;
-            z-index: 20;
             opacity: 0.7;
-            transition: opacity 0.3s;
+            transition: all 0.3s ease;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 0 10px var(--glow-soft);
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(5px);
         }
-        .youtube-player:hover { opacity: 1; }
-        .youtube-player iframe { width: 100%; height: 100%; }
+        
+        .youtube-player:hover { 
+            opacity: 1; 
+            transform: scale(1.05);
+        }
+        
+        .youtube-player iframe { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 10px;
+        }
+        
+        .music-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .music-toggle {
+            background: rgba(140, 160, 199, 0.2);
+            border: 1px solid var(--primary-soft);
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .music-toggle:hover {
+            background: rgba(140, 160, 199, 0.4);
+            transform: scale(1.1);
+        }
+        
         .music-attribution {
-            position: fixed;
-            bottom: 10px;
-            right: 30px;
             font-size: 0.7rem;
             opacity: 0.6;
-            z-index: 20;
             color: var(--text-light);
+            text-align: right;
+            max-width: 200px;
+            line-height: 1.2;
         }
-        .music-attribution a { color: var(--primary-soft); }
+        
+        .music-attribution a { 
+            color: var(--primary-soft); 
+            text-decoration: none;
+        }
+        
+        .music-attribution a:hover {
+            text-decoration: underline;
+        }
 
         /* ===================================
            9. KEYFRAME ANIMATIONS
@@ -433,8 +489,33 @@
             .cards-container { grid-template-columns: 1fr; }
             .card { height: 350px; }
             .card-front, .card-back { font-size: 1.2rem; padding: 1rem; }
-            .youtube-player { width: 150px; height: 40px; bottom: 20px; right: 20px; }
+            
+            /* Mobile YouTube Player Adjustments */
+            .youtube-container {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .youtube-player {
+                width: 150px;
+                height: 40px;
+                flex: 1;
+                max-width: 150px;
+            }
+            
+            .music-attribution {
+                font-size: 0.6rem;
+                max-width: 120px;
+                flex: 1;
+                text-align: left;
+                margin-left: 10px;
+            }
         }
+        
         @media screen and (max-width: 480px) {
             section { padding: 1rem; }
             .hero-title { font-size: 2.5rem; }
@@ -446,7 +527,50 @@
             .event-content { padding: 15px 20px; font-size: 0.9rem; }
             .ending-text { font-size: 1.2rem; }
             .signature { font-size: 1.8rem; }
-            .youtube-player { width: 120px; height: 35px; }
+            
+            /* Extra Small Mobile YouTube Player */
+            .youtube-container {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            
+            .youtube-player {
+                width: 100%;
+                height: 45px;
+                max-width: none;
+            }
+            
+            .music-controls {
+                justify-content: center;
+            }
+            
+            .music-attribution {
+                text-align: center;
+                max-width: none;
+                margin-left: 0;
+                font-size: 0.65rem;
+            }
+        }
+        
+        @media screen and (max-height: 600px) and (orientation: landscape) {
+            /* Landscape mode adjustments */
+            .youtube-container {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .youtube-player {
+                width: 180px;
+                height: 35px;
+            }
+            
+            .music-attribution {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -518,13 +642,19 @@
     </section>
 
     <!-- ===================================
-         UTILITY & SCRIPT ELEMENTS
+         MOBILE-RESPONSIVE YOUTUBE PLAYER
          =================================== -->
-    <canvas id="confetti-canvas"></canvas>
-    <div class="youtube-player">
-        <iframe src="https://www.youtube.com/embed/GAf2DQPYvGE?enablejsapi=1&autoplay=1&loop=1&playlist=GAf2DQPYvGE&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <div class="youtube-container">
+        <div class="music-controls">
+            <button class="music-toggle" id="music-toggle" title="Toggle Music">
+                <i class="fas fa-pause" id="music-icon"></i>
+            </button>
+        </div>
+        <div class="youtube-player" id="youtube-player">
+            <iframe id="youtube-iframe" src="https://www.youtube.com/embed/GAf2DQPYvGE?enablejsapi=1&autoplay=1&loop=1&playlist=GAf2DQPYvGE&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <p class="music-attribution">Music: <a href="https://www.youtube.com/watch?v=GAf2DQPYvGE" target="_blank">Rizky Febian Feat. Mahalini - Bermuara</a></p>
     </div>
-    <p class="music-attribution">Music: <a href="https://www.youtube.com/watch?v=GAf2DQPYvGE" target="_blank">Rizky Febian Feat. Mahalini - Bermuara</a></p>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -739,6 +869,63 @@
             });
         }, { threshold: 0.4 });
         timelineEvents.forEach(event => timelineObserver.observe(event));
+
+        // ===================================
+        // 7. YOUTUBE PLAYER CONTROLS
+        // ===================================
+        let isPlaying = true;
+        const musicToggle = document.getElementById('music-toggle');
+        const musicIcon = document.getElementById('music-icon');
+        const youtubePlayer = document.getElementById('youtube-player');
+        const youtubeIframe = document.getElementById('youtube-iframe');
+        
+        // Load YouTube IFrame API
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-iframe', {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+        
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                musicIcon.className = 'fas fa-pause';
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                musicIcon.className = 'fas fa-play';
+            }
+        }
+        
+        // Toggle music play/pause
+        musicToggle.addEventListener('click', () => {
+            if (player && player.pauseVideo && player.playVideo) {
+                if (isPlaying) {
+                    player.pauseVideo();
+                    musicIcon.className = 'fas fa-play';
+                } else {
+                    player.playVideo();
+                    musicIcon.className = 'fas fa-pause';
+                }
+                isPlaying = !isPlaying;
+            }
+        });
+        
+        // Load YouTube API script
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        // Make onYouTubeIframeAPIReady globally available
+        window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
     });
     </script>
 </body>
