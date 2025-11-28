@@ -20,6 +20,9 @@
             --glow-soft: rgba(224, 187, 228, 0.5);
             --script-font: 'Dancing Script', cursive;
             --body-font: 'Quicksand', sans-serif;
+            --fairy-purple: #b794f6;
+            --fairy-pink: #fbb6ce;
+            --fairy-blue: #90cdf4;
         }
 
         * {
@@ -40,7 +43,7 @@
         }
 
         /* --- NEW: COSMIC & LOVE ANIMATIONS CANVAS --- */
-        #cosmic-bg, #floating-hearts-canvas {
+        #cosmic-bg, #floating-hearts-canvas, #fairy-dust-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -52,6 +55,10 @@
             z-index: 1; /* Above background, below content */
             pointer-events: none; /* Allows clicking through it */
         }
+        #fairy-dust-canvas {
+            z-index: 2; /* Above hearts, below content */
+            pointer-events: none;
+        }
 
         section {
             min-height: 100vh;
@@ -61,7 +68,7 @@
             flex-direction: column;
             padding: 2rem;
             position: relative;
-            z-index: 2; /* Above canvases */
+            z-index: 3; /* Above canvases */
             transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
@@ -181,6 +188,56 @@
             color: rgba(224, 187, 228, 0.08);
             animation: heartPulse 5s ease-in-out infinite;
             z-index: 1;
+        }
+        
+        /* NEW: Fairy Tale Elements */
+        .fairy-wand {
+            position: absolute;
+            width: 30px;
+            height: 150px;
+            z-index: 4;
+            cursor: pointer;
+            transform-origin: bottom center;
+            animation: float 4s ease-in-out infinite;
+        }
+        .fairy-wand::before {
+            content: '✨';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+        }
+        .fairy-wand::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 120px;
+            background: linear-gradient(to bottom, var(--fairy-purple), var(--fairy-pink));
+            border-radius: 2px;
+        }
+        .fairy-wand:hover {
+            animation: spin 1s ease-in-out;
+        }
+        .magic-sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, var(--fairy-blue) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .fairy-tale-ornament {
+            position: absolute;
+            font-size: 2rem;
+            z-index: 4;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.7;
         }
 
         /* --- 4. INTERACTIVE LOVE CARDS --- */
@@ -356,40 +413,10 @@
         }
 
         /* --- 7. MUSIC & ATMOSPHERE --- */
-        .music-player { position: fixed; bottom: 30px; right: 30px; z-index: 100; }
-        #music-toggle-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--primary-soft);
-            border: none;
-            color: var(--bg-dark);
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 0 20px var(--glow-soft);
-            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-        #music-toggle-btn:hover { transform: scale(1.1); }
-        #music-toggle-btn.playing { animation: pulse 2s infinite; }
-        .sound-wave {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid var(--primary-soft);
-            opacity: 0;
-            pointer-events: none;
-        }
-        #music-toggle-btn.playing .sound-wave { animation: soundWave 2s infinite; }
-        
-        /* YouTube Player Styles */
+        /* YouTube Player Styles - Updated */
         .youtube-player {
             position: fixed;
-            bottom: 100px;
+            bottom: 30px;
             right: 30px;
             width: 200px;
             height: 50px;
@@ -398,6 +425,7 @@
             transition: opacity 0.3s;
             border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 0 15px var(--glow-soft);
         }
         .youtube-player:hover {
             opacity: 1;
@@ -406,20 +434,19 @@
             width: 100%;
             height: 100%;
         }
-        .music-source-toggle {
+        .music-attribution {
             position: fixed;
-            bottom: 170px;
+            bottom: 10px;
             right: 30px;
-            background: rgba(224, 187, 228, 0.2);
-            border: 1px solid var(--primary-soft);
-            border-radius: 20px;
-            padding: 5px 10px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            opacity: 0.6;
             z-index: 99;
-            cursor: pointer;
             color: var(--text-light);
         }
-
+        .music-attribution a {
+            color: var(--primary-soft);
+        }
+        
         /* --- 8. ENDING SECTION --- */
         #ending-section { text-align: center; overflow: hidden; }
         #orbs-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
@@ -452,9 +479,21 @@
         }
         @keyframes heartPulse { 0%, 100% { transform: scale(1); opacity: 0.08; } 50% { transform: scale(1.1); opacity: 0.15; } }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--glow-soft); } 70% { box-shadow: 0 0 0 25px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
-        @keyframes soundWave { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.8); opacity: 0; } }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
         @keyframes zoomInFade { to { opacity: 1; transform: scale(1); } }
+        /* NEW: Fairy Tale Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes sparkle {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+        }
 
         /* --- 10. RESPONSIVE DESIGN --- */
         @media screen and (max-width: 768px) {
@@ -468,10 +507,7 @@
             .cards-container { grid-template-columns: 1fr; }
             .card { height: 350px; }
             .card-front, .card-back { font-size: 1.2rem; padding: 1rem; }
-            .music-player { bottom: 20px; right: 20px; }
-            #music-toggle-btn { width: 50px; height: 50px; font-size: 1.2rem; }
-            .youtube-player { width: 150px; height: 40px; bottom: 80px; right: 20px; }
-            .music-source-toggle { bottom: 130px; right: 20px; font-size: 0.7rem; }
+            .youtube-player { width: 150px; height: 40px; bottom: 20px; right: 20px; }
         }
         
         @media screen and (max-width: 480px) {
@@ -494,11 +530,12 @@
     <!-- NEW: COSMIC & FLOATING HEARTS CANVASES -->
     <canvas id="cosmic-bg"></canvas>
     <canvas id="floating-hearts-canvas"></canvas>
+    <canvas id="fairy-dust-canvas"></canvas>
 
     <!-- CINEMATIC ENTRANCE -->
     <div id="cinematic-entrance">
         <canvas id="stars-canvas"></canvas>
-        <h1 class="entrance-text">hi sayang, tap to open the door…</h1>
+        <h1 class="entrance-text">Welcome to our fairy tale, Sayang…</h1>
         <div class="magical-door" id="magical-door">
             <div class="door-frame"></div>
             <div class="door"></div>
@@ -510,44 +547,67 @@
     <section id="hero-section">
         <div class="hero-content">
             <div class="heart-pulse-bg">❤</div>
-            <h1 class="hero-title">Happy 25th Birthday, Sayang!</h1>
+            <h1 class="hero-title">Happy 25th Birthday, My Princess!</h1>
             <p class="typewriter-sentence" id="typewriter"></p>
         </div>
+        <!-- Fairy Tale Elements -->
+        <div class="fairy-wand" style="top: 20%; left: 10%;"></div>
+        <div class="fairy-wand" style="top: 30%; right: 15%;"></div>
+        <div class="fairy-tale-ornament" style="top: 15%; left: 20%;">🧚‍♀️</div>
+        <div class="fairy-tale-ornament" style="top: 25%; right: 25%;">🦄</div>
+        <div class="fairy-tale-ornament" style="bottom: 20%; left: 15%;">🌸</div>
+        <div class="fairy-tale-ornament" style="bottom: 30%; right: 20%;">✨</div>
     </section>
 
     <!-- INTERACTIVE LOVE CARDS -->
     <section id="love-cards">
-        <h2 style="font-family: var(--script-font); font-size: clamp(2.5rem, 6vw, 3rem); margin-bottom: 2rem;">A Few Things For You</h2>
+        <h2 style="font-family: var(--script-font); font-size: clamp(2.5rem, 6vw, 3rem); margin-bottom: 2rem;">Our Magical Moments</h2>
         <div class="cards-container">
             <div class="card"><div class="card-inner"><div class="card-front">tap to reveal</div><div class="card-back">You make my world softer, calmer, and happier just by being in it.</div></div></div>
             <div class="card"><div class="card-inner"><div class="card-front">tap to reveal</div><div class="card-back">Every moment with you feels like a little piece of heaven I never knew I needed.</div></div></div>
             <div class="card"><div class="card-inner"><div class="card-front">tap to reveal</div><div class="card-back">Thank you for loving me in ways I never knew I deserved. I'm better because of you.</div></div></div>
             <div class="card special"><div class="card-inner"><div class="card-front">tap to reveal</div><div class="card-back">No matter where life takes us, I'll always choose you — today, tomorrow, and every day after.</div></div></div>
         </div>
+        <!-- Fairy Tale Elements -->
+        <div class="fairy-tale-ornament" style="top: 10%; left: 5%;">🌟</div>
+        <div class="fairy-tale-ornament" style="top: 15%; right: 10%;">🌙</div>
+        <div class="fairy-tale-ornament" style="bottom: 15%; left: 8%;">🌈</div>
+        <div class="fairy-tale-ornament" style="bottom: 20%; right: 5%;">💫</div>
     </section>
 
     <!-- LOVE TIMELINE -->
     <section id="love-timeline">
-        <h2 style="font-family: var(--script-font); font-size: clamp(2.5rem, 6vw, 3rem); margin-bottom: 3rem;">Our Story</h2>
+        <h2 style="font-family: var(--script-font); font-size: clamp(2.5rem, 6vw, 3rem); margin-bottom: 3rem;">Our Fairy Tale Story</h2>
         <div class="timeline-container" id="timeline-container">
             <div class="timeline-event left"><div class="event-content">Day 1: The day I met you… my heart finally understood what 'special' feels like.</div></div>
             <div class="timeline-event right"><div class="event-content">Day 100: By our first hundred days, I already knew — you're the one I want to hold onto forever.</div></div>
             <div class="timeline-event left"><div class="event-content">Day 372: 372 days with you, and somehow I love you deeper, softer, and more honestly than yesterday.</div></div>
             <div class="timeline-event right"><div class="event-content">Today: Today, I celebrate you — your heart, your smile, and the magic you bring into my life.❤️</div></div>
         </div>
+        <!-- Fairy Tale Elements -->
+        <div class="fairy-tale-ornament" style="top: 10%; left: 5%;">🧚‍♂️</div>
+        <div class="fairy-tale-ornament" style="top: 15%; right: 10%;">🏰</div>
+        <div class="fairy-tale-ornament" style="bottom: 15%; left: 8%;">👑</div>
+        <div class="fairy-tale-ornament" style="bottom: 20%; right: 5%;">💖</div>
     </section>
 
     <!-- ENDING SECTION -->
     <section id="ending-section">
         <div class="ending-content">
             <div class="ending-text">
-                <p>Dear b,</p>
-                <p>I love you sayangg!!.</p>
+                <p>My dear princess,</p>
+                <p>I love you more than words can say.</p>
                 <p>More today than yesterday.</p>
                 <p>More tomorrow than today.</p>
+                <p>Forever and always.</p>
             </div>
-            <p class="signature">from d, with all my heart ❤️</p>
+            <p class="signature">from your prince charming, with all my heart ❤️</p>
         </div>
+        <!-- Fairy Tale Elements -->
+        <div class="fairy-tale-ornament" style="top: 10%; left: 5%;">🌹</div>
+        <div class="fairy-tale-ornament" style="top: 15%; right: 10%;">🦋</div>
+        <div class="fairy-tale-ornament" style="bottom: 15%; left: 8%;">🌺</div>
+        <div class="fairy-tale-ornament" style="bottom: 20%; right: 5%;">💕</div>
     </section>
 
     <!-- SECRET MODE ELEMENTS -->
@@ -556,33 +616,16 @@
     <div id="petals-container"></div>
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- MUSIC PLAYER -->
-    <div class="music-player">
-        <audio id="bg-music" src="https://www.bensound.com/bensound-music/bensound-onceagain.mp3" loop></audio>
-        <button id="music-toggle-btn">
-            <i class="fas fa-play"></i>
-            <span class="sound-wave"></span>
-        </button>
-    </div>
-    
-    <!-- YouTube Player (Hidden by default) -->
-    <div class="youtube-player" id="youtube-player" style="display: none;">
+    <!-- YouTube Player (Updated) -->
+    <div class="youtube-player" id="youtube-player">
         <!-- Replace VIDEO_ID with your YouTube video ID -->
         <iframe id="youtube-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
     
-    <!-- Music Source Toggle -->
-    <div class="music-source-toggle" id="music-source-toggle">Switch to YouTube</div>
-    
     <!-- Music Attribution -->
-    <p style="position: fixed; bottom: 10px; right: 30px; font-size: 0.7rem; opacity: 0.6; z-index: 99; color: var(--text-light);">
-        Music by <a href="https://https://www.youtube.com/watch?v=GAf2DQPYvGE" target="_blank" style="color: var(--primary-soft);">Youtube.com</a>
+    <p class="music-attribution">
+        Music: <a href="https://www.youtube.com/watch?v=GAf2DQPYvGE" target="_blank">Rizky Febian Feat. Mahalini - Bermuara</a>
     </p>
-    
-    <!-- Instructions for adding your own music -->
-    <div style="position: fixed; bottom: 60px; right: 30px; font-size: 0.7rem; opacity: 0.6; z-index: 99; color: var(--text-light); max-width: 200px; text-align: right;">
-        Rizky Febian Feat. Mahalini - Bermuara
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -689,6 +732,44 @@
             }
             drawFloatingHearts();
 
+            // --- NEW: FAIRY DUST ANIMATION ---
+            const { canvas: fairyDustCanvas, ctx: fairyDustCtx } = setupCanvas('fairy-dust-canvas');
+            const fairyDustParticles = [];
+            function createFairyDust() {
+                fairyDustParticles.push({
+                    x: Math.random() * fairyDustCanvas.width,
+                    y: Math.random() * fairyDustCanvas.height,
+                    size: Math.random() * 3 + 1,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.5,
+                    color: `hsla(${Math.random() * 60 + 280}, 100%, 70%, `, // Purple/pink/blue hues
+                });
+            }
+            function drawFairyDust() {
+                fairyDustCtx.clearRect(0, 0, fairyDustCanvas.width, fairyDustCanvas.height);
+                fairyDustParticles.forEach((particle, index) => {
+                    fairyDustCtx.save();
+                    fairyDustCtx.globalAlpha = particle.opacity;
+                    fairyDustCtx.fillStyle = particle.color + particle.opacity + ')';
+                    fairyDustCtx.beginPath();
+                    fairyDustCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    fairyDustCtx.fill();
+                    fairyDustCtx.restore();
+
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedY;
+                    particle.opacity -= 0.005;
+
+                    if (particle.opacity <= 0) {
+                        fairyDustParticles.splice(index, 1);
+                    }
+                });
+                if (Math.random() < 0.1) createFairyDust(); // Create fairy dust occasionally
+                requestAnimationFrame(drawFairyDust);
+            }
+            drawFairyDust();
+
             // --- 1. ENTRANCE: SHIMMERING STARS ---
             const { canvas: starsCanvas, ctx: starsCtx } = setupCanvas('stars-canvas');
             const entranceStars = Array(200).fill().map(() => ({
@@ -715,12 +796,26 @@
 
             // --- 2. HERO: TYPEWRITER ---
             const typewriterElement = document.getElementById('typewriter');
-            const text = "Every day with you feels like a blessing I didn't know I needed.";
+            const text = "Once upon a time, in a magical kingdom, a prince met his princess... and lived happily ever after with you.";
             const letters = text.split('').map(l => l === ' ' ? ' ' : `<span class="letter">${l}</span>`);
             typewriterElement.innerHTML = letters.join('') + '<span class="cursor"></span>';
             const letterElements = typewriterElement.querySelectorAll('.letter');
             letterElements.forEach((el, i) => el.style.animationDelay = `${i * 80}ms`);
             setTimeout(() => typewriterElement.querySelector('.cursor').style.display = 'none', letterElements.length * 80 + 1000);
+
+            // --- 3. FAIRY WAND INTERACTION ---
+            const fairyWands = document.querySelectorAll('.fairy-wand');
+            fairyWands.forEach(wand => {
+                wand.addEventListener('click', (e) => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'magic-sparkle';
+                    sparkle.style.left = e.pageX + 'px';
+                    sparkle.style.top = e.pageY + 'px';
+                    sparkle.style.animation = 'sparkle 1s ease-out forwards';
+                    document.body.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 1000);
+                });
+            });
 
             // --- 4. LOVE CARDS & CONFETTI ---
             const cards = document.querySelectorAll('.card');
@@ -732,7 +827,7 @@
                 const { canvas, ctx } = setupCanvas('confetti-canvas');
                 const confettiPieces = Array(150).fill().map(() => ({
                     x: Math.random() * canvas.width, y: -10, w: 10, h: 5,
-                    color: ['#e0bbe4', '#fde2e4', '#fdfdfd', '#d4a5a5'][Math.floor(Math.random() * 4)],
+                    color: ['#e0bbe4', '#fde2e4', '#fdfdfd', '#d4a5a5', '#b794f6', '#fbb6ce'][Math.floor(Math.random() * 6)],
                     speed: Math.random() * 3 + 2, rotation: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 10
                 }));
                 function drawConfetti() {
@@ -779,74 +874,25 @@
             document.body.addEventListener('touchstart', (e) => touchStartY = e.changedTouches[0].screenY);
             document.body.addEventListener('touchend', (e) => { const touchEndY = e.changedTouches[0].screenY; if (touchStartY - touchEndY < -100) triggerPetals(); });
             function showEasterEgg(id) { const egg = document.getElementById(id); egg.classList.add('show'); setTimeout(() => egg.classList.remove('show'), 3000); }
-            function triggerPetals() { const container = document.getElementById('petals-container'); for (let i = 0; i < 20; i++) { setTimeout(() => { const petal = document.createElement('div'); petal.className = 'falling-petals'; petal.innerHTML = ['🌸', '🌺', '🌹', '💖'][Math.floor(Math.random() * 4)]; petal.style.left = Math.random() * 100 + '%'; petal.style.animationDuration = (Math.random() * 3 + 2) + 's'; container.appendChild(petal); setTimeout(() => petal.remove(), 5000); }, i * 100); } }
+            function triggerPetals() { const container = document.getElementById('petals-container'); for (let i = 0; i < 20; i++) { setTimeout(() => { const petal = document.createElement('div'); petal.className = 'falling-petals'; petal.innerHTML = ['🌸', '🌺', '🌹', '💖', '🧚‍♀️', '✨'][Math.floor(Math.random() * 6)]; petal.style.left = Math.random() * 100 + '%'; petal.style.animationDuration = (Math.random() * 3 + 2) + 's'; container.appendChild(petal); setTimeout(() => petal.remove(), 5000); }, i * 100); } }
 
-            // --- 7. MUSIC PLAYER ---
-            const musicBtn = document.getElementById('music-toggle-btn'); 
-            const music = document.getElementById('bg-music'); 
-            const musicIcon = musicBtn.querySelector('i');
+            // --- 7. YOUTUBE PLAYER AUTOPLAY ---
             const youtubePlayer = document.getElementById('youtube-player');
             const youtubeIframe = document.getElementById('youtube-iframe');
-            const musicSourceToggle = document.getElementById('music-source-toggle');
             
-            // YouTube video ID (updated with your provided ID)
-            const youtubeVideoId = "GAf2DQPYvGE"; // Your YouTube video ID
+            // YouTube video ID
+            const youtubeVideoId = "GAf2DQPYvGE";
             
-            let usingYouTube = false;
+            // Set up YouTube iframe with autoplay
+            youtubeIframe.src = `https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&autoplay=1&loop=1&playlist=${youtubeVideoId}&controls=0&showinfo=0&rel=0&modestbranding=1`;
             
-            // Set up YouTube iframe
-            youtubeIframe.src = `https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&autoplay=0&loop=1&playlist=${youtubeVideoId}&controls=0&showinfo=0&rel=0&modestbranding=1`;
-            
-            // Music source toggle
-            musicSourceToggle.addEventListener('click', () => {
-                usingYouTube = !usingYouTube;
-                
-                if (usingYouTube) {
-                    // Switch to YouTube
-                    music.pause();
-                    musicIcon.className = 'fas fa-play';
-                    musicBtn.classList.remove('playing');
-                    
-                    youtubePlayer.style.display = 'block';
-                    musicSourceToggle.textContent = 'Switch to MP3';
-                    
-                    // Try to autoplay YouTube (may not work due to browser policies)
+            // Try to autoplay when page loads
+            window.addEventListener('load', () => {
+                // This may not work due to browser policies, but we'll try
+                setTimeout(() => {
                     youtubeIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                } else {
-                    // Switch to MP3
-                    youtubePlayer.style.display = 'none';
-                    musicSourceToggle.textContent = 'Switch to YouTube';
-                }
+                }, 2000);
             });
-            
-            // Original music button functionality
-            musicBtn.addEventListener('click', () => {
-                if (usingYouTube) {
-                    // Toggle YouTube playback
-                    const isPlaying = youtubeIframe.src.includes('autoplay=1');
-                    if (isPlaying) {
-                        youtubeIframe.src = youtubeIframe.src.replace('autoplay=1', 'autoplay=0');
-                        musicIcon.className = 'fas fa-play';
-                        musicBtn.classList.remove('playing');
-                    } else {
-                        youtubeIframe.src = youtubeIframe.src.replace('autoplay=0', 'autoplay=1');
-                        musicIcon.className = 'fas fa-pause';
-                        musicBtn.classList.add('playing');
-                    }
-                } else {
-                    // Toggle MP3 playback
-                    if (music.paused) {
-                        music.play();
-                        musicIcon.className = 'fas fa-pause';
-                        musicBtn.classList.add('playing');
-                    } else {
-                        music.pause();
-                        musicIcon.className = 'fas fa-play';
-                        musicBtn.classList.remove('playing');
-                    }
-                }
-            });
-
         });
     </script>
 </body>
